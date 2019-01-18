@@ -22,17 +22,17 @@ public class PlayerInput : MonoBehaviour
             {
                 if (touch.phase == TouchPhase.Began)
                 {
-                    EventManager.TriggerEvent("UserTap");
+                    EventManager.TriggerEvent("UserTap", 1);
                 }
             }
             if (Input.GetKey(TOUCH_KEY))
             {
-                EventManager.TriggerEvent("UserTap");
+                EventManager.TriggerEvent("UserTap", 1);
             }
         }
     }
 
-    void OnCollision()
+    void OnCollision(int data)
     {
         isEnabled = false;
     }

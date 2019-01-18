@@ -5,8 +5,10 @@ using System.Collections.Generic;
 
 public class EventManager : MonoBehaviour
 {
-
-    private Dictionary<string, UnityEvent> eventDictionary;
+    public class MyIntEvent : UnityEvent<int>
+    {
+    }
+    private Dictionary<string, MyIntEvent> eventDictionary;
 
     private static EventManager eventManager;
 
@@ -36,41 +38,41 @@ public class EventManager : MonoBehaviour
     {
         if (eventDictionary == null)
         {
-            eventDictionary = new Dictionary<string, UnityEvent>();
+            eventDictionary = new Dictionary<string, MyIntEvent>();
         }
     }
 
-    public static void StartListening(string eventName, UnityAction listener)
+    public static void StartListening(string eventName, UnityAction<int> listener)
     {
-        UnityEvent thisEvent = null;
+        MyIntEvent thisEvent = null;
         if (instance.eventDictionary.TryGetValue(eventName, out thisEvent))
         {
             thisEvent.AddListener(listener);
         }
         else
         {
-            thisEvent = new UnityEvent();
+            thisEvent = new MyIntEvent();
             thisEvent.AddListener(listener);
             instance.eventDictionary.Add(eventName, thisEvent);
         }
     }
 
-    public static void StopListening(string eventName, UnityAction listener)
+    public static void StopListening(string eventName, UnityAction<int> listener)
     {
         if (eventManager == null) return;
-        UnityEvent thisEvent = null;
+        MyIntEvent thisEvent = null;
         if (instance.eventDictionary.TryGetValue(eventName, out thisEvent))
         {
             thisEvent.RemoveListener(listener);
         }
     }
 
-    public static void TriggerEvent(string eventName)
+    public static void TriggerEvent(string eventName, int data)
     {
-        UnityEvent thisEvent = null;
+        MyIntEvent thisEvent = null;
         if (instance.eventDictionary.TryGetValue(eventName, out thisEvent))
         {
-            thisEvent.Invoke();
+            thisEvent.Invoke(data);
         }
     }
 }

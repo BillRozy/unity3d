@@ -7,7 +7,8 @@ public class PlayerCollision : MonoBehaviour
     {
         if (collisionInfo.collider.tag == "Kegel")
         {
-            EventManager.TriggerEvent("KegelCollision");
+            Debug.Log("Collide");
+            EventManager.TriggerEvent("KegelCollision", collisionInfo.collider.GetInstanceID());
         }
     }
 }

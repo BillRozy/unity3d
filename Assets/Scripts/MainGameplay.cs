@@ -1,10 +1,13 @@
 ﻿using UnityEngine;
+using System.Collections;
+using System.Collections.Generic;
 
 public class MainGameplay : MonoBehaviour
 {
     public Rigidbody rb;
     public GameObject rotatingArrow;
     private NavArrowRotate rotator;
+    private HashSet<int> downKegelsIds = new HashSet<int>();
     public NavArrowRotate rotatorInstance {
         get
         {
@@ -28,6 +31,7 @@ public class MainGameplay : MonoBehaviour
     {
         EventManager.StartListening("UserTap", OnTouch);
         EventManager.StartListening("KegelCollision", OnKegelCollision);
+        EventManager.StartListening("KegelIsDown", OnKegelDown);
     }
 
     // Update is called once per frame
@@ -36,18 +40,28 @@ public class MainGameplay : MonoBehaviour
         
     }
 
-    public void OnTouch()
+    public void OnTouch(int data)
     {
         if (userCanControl)
         {
             rotatorInstance.rotating = false;
-            rb.AddForce(0, 0, 70000 * Time.deltaTime);
+            rb.AddForce(2000 * rotatingArrow.transform.rotation.y, 0, 2000);
         }
         userCanControl = false;
     }
 
-    public void OnKegelCollision()
+    public void OnKegelCollision(int data)
     {
         playerCam.GetComponent<FollowPlayer>().follow = false;
+    }
+
+    private void OnKegelDown(int kegelId)
+    {
+        if (!downKegelsIds.Contains(kegelId))
+        {
+            downKegelsIds.Add(kegelId);
+            EventManager.TriggerEvent("ScoreUpdate", downKegelsIds.Count);
+        }
+
     }
 }
